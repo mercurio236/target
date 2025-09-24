@@ -5,12 +5,18 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@expo-google-fonts/inter':
+    specifier: ^0.4.2
+    version: 0.4.2
   expo:
     specifier: ~54.0.10
     version: 54.0.10(@babel/core@7.28.4)(@expo/metro-runtime@6.1.2)(expo-router@6.0.8)(react-native@0.81.4)(react@19.1.0)
   expo-constants:
     specifier: ~18.0.9
     version: 18.0.9(expo@54.0.10)(react-native@0.81.4)
+  expo-font:
+    specifier: ~14.0.8
+    version: 14.0.8(expo@54.0.10)(react-native@0.81.4)(react@19.1.0)
   expo-linking:
     specifier: ~8.0.8
     version: 8.0.8(expo@54.0.10)(react-native@0.81.4)(react@19.1.0)
@@ -1056,6 +1062,10 @@ packages:
     dependencies:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.27.1
+    dev: false
+
+  /@expo-google-fonts/inter@0.4.2:
+    resolution: {integrity: sha512-syfiImMaDmq7cFi0of+waE2M4uSCyd16zgyWxdPOY7fN2VBmSLKEzkfbZgeOjJq61kSqPBNNtXjggiQiSD6gMQ==}
     dev: false
 
   /@expo/cli@54.0.8(expo-router@6.0.8)(expo@54.0.10)(react-native@0.81.4):
