@@ -1,7 +1,7 @@
 import { Button } from '@/components/button'
 import { List } from '@/components/list'
 import { Target } from '@/components/target'
-import { View } from 'react-native'
+import { StatusBar, View } from 'react-native'
 import { HomeHeader } from '../components/home-header'
 import { router } from 'expo-router'
 
@@ -31,6 +31,7 @@ const target = [
 export default function Index() {
   return (
     <View style={{ flex: 1 }}>
+      <StatusBar barStyle='light-content'/>
       <HomeHeader data={summary} />
 
       <List
