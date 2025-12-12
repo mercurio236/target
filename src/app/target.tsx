@@ -4,8 +4,8 @@ import { Input } from '@/components/input'
 import { PageHeader } from '@/components/page-header'
 import { useTargetDatabase } from '@/database/useTargetDatabase'
 import { router, useLocalSearchParams } from 'expo-router'
-import { useState } from 'react'
-import { Alert, Text, View } from 'react-native'
+import { useEffect, useState } from 'react'
+import { Alert, View } from 'react-native'
 
 export default function Target() {
   const [isLoading, setIsLoading] = useState(false)
@@ -21,8 +21,25 @@ export default function Target() {
     }
 
     if (params.id) {
+      update()
     } else {
       create()
+    }
+  }
+
+  async function update() {
+    try {
+      await targetDatabase.update({ id: Number(params.id), name, amount })
+      Alert.alert('Sucesso!', 'Meta atualizada com sucesso!', [
+        {
+          text: 'Ok',
+          onPress: () => router.back(),
+        },
+      ])
+    } catch (error) {
+      Alert.alert('Error', 'Não foi possível atualizar a meta')
+      console.log(error)
+      setIsLoading(false)
     }
   }
 
@@ -42,11 +59,64 @@ export default function Target() {
     }
   }
 
+  async function fetchDetails(id: number) {
+    try {
+      const response = await targetDatabase.show(id)
+      setName(response.name)
+      setAmount(response.amount)
+    } catch (error) {
+      Alert.alert('Error', 'Não foi possível carregar os detalhes da meta')
+      console.log(error)
+    }
+  }
+
+  function handleRemove() {
+    if (!params.id) {
+      return
+    }
+
+    Alert.alert('Remover', 'Deseja realmente remover?', [
+      {
+        text: 'Não',
+        style: 'cancel',
+      },
+      {
+        text: 'Sim',
+        onPress: remove,
+      },
+    ])
+  }
+
+  async function remove() {
+    try {
+      setIsLoading(true)
+
+      await targetDatabase.remove(Number(params.id))
+
+      Alert.alert('Meta', 'Meta removida!', [
+        { text: 'Ok', onPress: () => router.replace('/') },
+      ])
+    } catch (error) {
+      Alert.alert('Erro', 'Não foi possível remover a meta')
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    if (params.id) {
+      fetchDetails(Number(params.id))
+    }
+  }),
+    [params.id]
+
   return (
     <View style={{ flex: 1, padding: 24 }}>
       <PageHeader
         title="Meta"
         subtitle="A cada valor guardado você fica mais próximo da sua meta. Se esforce para guardar e evitar retirar."
+        rightButton={
+          params.id ? { icons: 'delete', onPress: handleRemove } : undefined
+        }
       />
       <View style={{ marginTop: 32, gap: 24 }}>
         <Input
