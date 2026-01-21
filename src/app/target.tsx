@@ -4,6 +4,7 @@ import { Input } from '@/components/input'
 import { PageHeader } from '@/components/page-header'
 import { useTargetDatabase } from '@/database/useTargetDatabase'
 import { router, useLocalSearchParams } from 'expo-router'
+import { StatusBar } from 'expo-status-bar'
 import { useEffect, useState } from 'react'
 import { Alert, View } from 'react-native'
 
@@ -111,6 +112,7 @@ export default function Target() {
 
   return (
     <View style={{ flex: 1, padding: 24 }}>
+      <StatusBar style='dark'/>
       <PageHeader
         title="Meta"
         subtitle="A cada valor guardado você fica mais próximo da sua meta. Se esforce para guardar e evitar retirar."

@@ -2,23 +2,20 @@ import { Button } from '@/components/button'
 import { List } from '@/components/list'
 import { Target, TargetProps } from '@/components/target'
 import { Alert, StatusBar, View } from 'react-native'
-import { HomeHeader } from '../components/home-header'
+import { HomeHeader, HomeHeaderProps } from '../components/home-header'
 import { router, useFocusEffect } from 'expo-router'
 import { useTargetDatabase } from '@/database/useTargetDatabase'
 import { useCallback, useState } from 'react'
 import { Loading } from '@/components/loading'
 import { numberToCurrency } from '@/utils/numberToCurrency'
-
-const summary = {
-  total: 'R$ 2.680,00',
-  input: { label: 'Entradas', value: 'R$ 6,184.90' },
-  output: { label: 'Saídas', value: '-R$ 883.65' },
-}
+import { useTransactionsDatabase } from '@/database/useTransactionsDatabase'
 
 export default function Index() {
+  const [summary, setSummary] = useState<HomeHeaderProps>()
   const [isFetching, setIsFetching] = useState(true)
   const [targets, setTargets] = useState<TargetProps[]>([])
   const targetDatabase = useTargetDatabase()
+  const transactionsDatabase = useTransactionsDatabase()
 
   async function fetchTargets(): Promise<TargetProps[]> {
     try {
@@ -37,19 +34,42 @@ export default function Index() {
     }
   }
 
+  async function fetchSummary(): Promise<HomeHeaderProps> {
+    try {
+      const response = await transactionsDatabase.summury()
+
+      return {
+        total: numberToCurrency(response.input + response.output),
+        input: {
+          label: 'Entradas',
+          value: numberToCurrency(response.input),
+        },
+        output: {
+          label: 'Saídas',
+          value: numberToCurrency(response.output),
+        },
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Não foi possível carregar o resumo')
+      console.log(error)
+    }
+  }
+
   async function fetchData() {
     const targetDataPromise = fetchTargets()
+    const dataSummaryPromise = fetchSummary()
 
-    const [targetData] = await Promise.all([targetDataPromise])
+    const [targetData, dataSummary] = await Promise.all([targetDataPromise, dataSummaryPromise])
 
     setTargets(targetData)
+    setSummary(dataSummary)
     setIsFetching(false)
   }
 
   useFocusEffect(
     useCallback(() => {
       fetchData()
-    }, [])
+    }, []),
   )
 
   if (isFetching) {

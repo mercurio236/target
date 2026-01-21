@@ -11,6 +11,7 @@ import { numberToCurrency } from '@/utils/numberToCurrency'
 import { TransactionTypes } from '@/utils/transactions-types'
 import dayjs from 'dayjs'
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router'
+import { StatusBar } from 'expo-status-bar'
 import { useCallback, useState } from 'react'
 import { Alert, View } from 'react-native'
 
@@ -104,6 +105,7 @@ export default function InProgress() {
 
   return (
     <View style={{ flex: 1, padding: 24, gap: 32 }}>
+      <StatusBar style='dark'/>
       <PageHeader
         title={details.name}
         rightButton={{
